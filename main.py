@@ -37,7 +37,7 @@ def report():
     print(f'Water: {resources["water"]}ml')
     print(f'Milk: {resources["milk"]}ml')
     print(f'Coffee: {resources["coffee"]}ml')
-    print(f'Money: ${moneyAfterPurchase} ')
+    print(f'Money: ${round(moneyAfterPurchase, 2)} ')
     return
 
 
@@ -50,9 +50,9 @@ def money(cost, coffeeType):
     nickles = int(input("How many nickles?:"))
     pennies = int(input("How many pennies?:"))
     userMoney = (quarter * 0.25) + (dimes * 0.10) + (nickles * 0.05) + (pennies * 0.01)
-    print("user money =", userMoney)
+    #print("user money =", userMoney)
     remainder = userMoney - cost
-    print("remainder = ", remainder)
+    #print("remainder = ", remainder)
     if remainder >= 0:
         print(f"Here is ${round(remainder, 2)} in change")
         print(f"Here is your {coffeeType}. Enjoy!")
@@ -68,17 +68,14 @@ def money(cost, coffeeType):
 def checkIngredients(typeCoffee):
     global resources
     global MENU
-    if typeCoffee != "espresso":
-        if resources["water"] >= MENU[typeCoffee]["ingredients"]["water"] and resources["milk"] >= MENU[typeCoffee]["ingredients"]["milk"] and  resources["coffee"] >= MENU[typeCoffee]["ingredients"]["coffee"]:
-            return True
-        else:
-            return False
-    else:
-        if resources["water"] >= MENU[typeCoffee]["ingredients"]["water"] and resources["coffee"] >= MENU[typeCoffee]["ingredients"]["coffee"]:
-            return True
-        else:
-            return False
+    if resources["water"] < MENU[typeCoffee]["ingredients"]["water"]:
+        return "water"
+    if resources["coffee"] < MENU[typeCoffee]["ingredients"]["coffee"]:
+        return "coffee"
 
+    if typeCoffee != "espresso":
+        if resources["milk"] < MENU[typeCoffee]["ingredients"]["milk"]:
+            return "milk"
 
 turn = True
 # TODO: 1.print description
@@ -88,10 +85,10 @@ while turn:
     if question == "report":
         report()
     elif question == "latte":
-        if checkIngredients(question) == True:
-            money(MENU["latte"]["cost"], "latte")
+        if checkIngredients(question) == "water" or checkIngredients(question) == "milk" or checkIngredients(question) == "coffee":
+            print(f"Sorry there is not enough {checkIngredients(question)}.")
         else:
-            print("Sorry there is not enough ingredient.")
+            money(MENU["latte"]["cost"], "latte")
     elif question == "espresso":
         money(MENU["espresso"]["cost"], "espresso")
     elif question == "cappuccino":
