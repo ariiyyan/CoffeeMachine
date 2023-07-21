@@ -65,6 +65,21 @@ def money(cost, coffeeType):
     return
 
 
+def checkIngredients(typeCoffee):
+    global resources
+    global MENU
+    if typeCoffee != "espresso":
+        if resources["water"] >= MENU[typeCoffee]["ingredients"]["water"] and resources["milk"] >= MENU[typeCoffee]["ingredients"]["milk"] and  resources["coffee"] >= MENU[typeCoffee]["ingredients"]["coffee"]:
+            return True
+        else:
+            return False
+    else:
+        if resources["water"] >= MENU[typeCoffee]["ingredients"]["water"] and resources["coffee"] >= MENU[typeCoffee]["ingredients"]["coffee"]:
+            return True
+        else:
+            return False
+
+
 turn = True
 # TODO: 1.print description
 while turn:
@@ -73,7 +88,10 @@ while turn:
     if question == "report":
         report()
     elif question == "latte":
-        money(MENU["latte"]["cost"], "latte")
+        if checkIngredients(question) == True:
+            money(MENU["latte"]["cost"], "latte")
+        else:
+            print("Sorry there is not enough ingredient.")
     elif question == "espresso":
         money(MENU["espresso"]["cost"], "espresso")
     elif question == "cappuccino":
